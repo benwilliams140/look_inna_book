@@ -8,10 +8,12 @@ class CustomerDashboard extends React.Component {
         this.state = {
             message: ''
         };
+    }
 
+    componentDidMount() {
         this.props.socket.on('message', (message) => {
-            this.state.message = message; // eslint-disable-line
-        })
+            this.setState({message: message});
+        });
     }
 
     handleChange = (event) => {
@@ -21,7 +23,7 @@ class CustomerDashboard extends React.Component {
     sendMessage = (event) => {
         event.preventDefault(); // prevents refreshing after button click
         this.props.socket.emit('message', 'It works!');
-    }
+    }  
 
     render() {
         return(
