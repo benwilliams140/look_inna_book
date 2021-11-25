@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import { Link, Redirect } from 'react-router-dom'
 import React from 'react'
-import * as Helper from '../Helper'
+import * as Helper from '../Helper' // eslint-disable-line
 
 class Login extends React.Component {
     constructor(props) {
@@ -14,27 +14,26 @@ class Login extends React.Component {
         };
     }
 
+    // setup socket event handling
+    componentDidMount() {
+        this.props.socket.on('user', (user) => {
+            this.props.setUser(user);
+        });
+    }
+
     handleChange = (event) => {
         this.setState({[event.target.id]: event.target.value});
     }
 
-    login = async(event) => {
+    login = (event) => {
         event.preventDefault();
 
-        const req = {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/html'},
-            body: JSON.stringify({
-                username: this.state.username,
-                password: this.state.password
-            })
+        const credentials = {
+            username: this.state.username,
+            password: this.state.password
         };
 
-        await fetch(Helper.getURL('login'), req)
-        .then((res) => res.json())
-        .then((res) => {
-            this.setState({ response: res.loggedIn.toString() });
-        });
+        this.props.socket.emit('customerLogin', credentials);
     }
     
     render() {
@@ -55,9 +54,6 @@ class Login extends React.Component {
                             <button onClick = { this.login.bind(this) }>Login</button>
                         </div>
                     </form>
-                </div>
-                <div>
-                    <p>Logged In: {this.state.response}</p>
                 </div>
             </div>
         )

@@ -3,8 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import io from 'socket.io-client'
 
 import './App.css';
-import Login from './Components/Login';
-import Register from './Components/Register';
 import CustomerDashboard from './Pages/CustomerDashboard';
 import OwnerDashboard from './Pages/OwnerDashboard';
 
@@ -23,12 +21,6 @@ function App() {
     socket ? (
       <BrowserRouter>
         <Routes>
-          <Route path = '/login' element = { 
-            <Login/>
-          } />
-          <Route path = '/register' element = {
-            <Register/>
-          } />
           <Route path = '/' element = {
             <CustomerDashboard socket={socket}/> 
           } />
