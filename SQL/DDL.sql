@@ -201,3 +201,7 @@ create table shipment(
 );
 
 insert into account values(default, 'Ben', 'Williams', 'admin', 'pass', 'benwilliams@cmail.carleton.ca', 1234567890);
+
+select *
+from account
+where upper(first_name) like upper('%%')

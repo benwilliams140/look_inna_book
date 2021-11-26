@@ -15,24 +15,40 @@ class Register extends React.Component {
     }
 
     register = async() => {
-        const req = {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/html'},
-            body: JSON.stringify({
-                
-            })
-        };
-
-        await fetch('/register', req)
-        .then((res) => {
-            console.log(JSON.parse(res));
-        })
+        
     }
     
     render() {
         return(
             <div>
-                <h3>Register</h3>
+                <h1>Register</h1>
+                <form>
+                    <div>
+                        <label for='firstName'>First Name</label>
+                        <input id='firstName' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <div>
+                        <label for='lastName'>Last Name</label>
+                        <input id='lastName' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <div>
+                        <label for='username'>Username</label>
+                        <input id='username' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <div>
+                        <label for='password'>Password</label>
+                        <input id='password' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <div>
+                        <label for='email'>E-Mail</label>
+                        <input id='email' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <div>
+                        <label for='phoneNumber'>Phone Number</label>
+                        <input id='phoneNumber' onChange={this.handleChange.bind(this)}/>
+                    </div>
+                    <button onClick={this.register.bind(this)}>Register</button>
+                </form>
             </div>
         )
     }

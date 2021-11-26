@@ -25,17 +25,30 @@ class Database {
         //this.pool.query("INSERT INTO customer values()")
     }
 
-    customerLogin(credentials) {
+    accountLogin(credentials) {
         return new Promise((resolve, reject) => {
             this.pool.query("SELECT * FROM account WHERE username=$1 AND password=$2", [credentials.username, credentials.password], (err, res) => {
                 if(err) reject(err);
-                
+
                 if(res.rowCount && res.rowCount === 1) {
                     resolve(res.rows[0]);
                 } else {
                     resolve(null);
                 }
             });
+        });
+    }
+
+    searchForBooks(filter) {
+        return new Promise((resolve, reject) => {
+            resolve([{
+                isbn: 1234,
+                name: 'Harry Potter',
+                authors: [
+                    'Ben'
+                ],
+                price: 15.99
+            }]);
         });
     }
 };

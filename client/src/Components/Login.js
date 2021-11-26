@@ -1,7 +1,6 @@
 // eslint-disable-next-line
 import { Link, Redirect } from 'react-router-dom'
 import React from 'react'
-import * as Helper from '../Helper' // eslint-disable-line
 
 class Login extends React.Component {
     constructor(props) {
@@ -33,7 +32,7 @@ class Login extends React.Component {
             password: this.state.password
         };
 
-        this.props.socket.emit('customerLogin', credentials);
+        this.props.socket.emit('accountLogin', credentials);
     }
     
     render() {

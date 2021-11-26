@@ -7,7 +7,8 @@ class Connection {
         this.database = new Database();
 
         socket.on('registerCustomer', (customer) => this.handleCustomerRegistration(customer));
-        socket.on('customerLogin', (credentials) => this.handleCustomerLogin(credentials));
+        socket.on('accountLogin', (credentials) => this.handleAccountLogin(credentials));
+        socket.on('retrieveBooks', (filter) => this.handleBookSearch(filter));
 
         this.io.to(this.socket.id).emit('connection');
     }
@@ -16,8 +17,8 @@ class Connection {
         this.database.addNewCustomer(customer);
     }
 
-    handleCustomerLogin(credentials) {
-        this.database.customerLogin(credentials)
+    handleAccountLogin(credentials) {
+        this.database.accountLogin(credentials)
         .then((user) => {
             this.socket.emit('user', user);
         })
@@ -26,8 +27,14 @@ class Connection {
         });
     }
 
-    handleMessage(message) { 
-        this.io.to(this.socket.id).emit('message', message);
+    handleBookSearch(filter) {
+        this.database.searchForBooks(filter)
+        .then((books) => {
+            this.socket.emit('books', books);
+        })
+        .catch((err) => {
+            throw err;
+        });
     }
 };
 
