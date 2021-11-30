@@ -1,6 +1,6 @@
 // eslint-disable-next-line
-import { Link, Redirect } from 'react-router-dom'
 import React from 'react'
+import { Navigate } from 'react-router-dom'
 
 import Login from '../Components/Login'
 import Register from '../Components/Register'
@@ -10,7 +10,7 @@ class CustomerDashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userID: null,
+            user: window.localStorage.getItem("user") || {},
             modal: {
                 opened: false,
                 type: null
@@ -28,7 +28,7 @@ class CustomerDashboard extends React.Component {
 
     logout() {
         window.localStorage.clear();
-        this.setState({userID: null});
+        this.setState({user: {}});
     }
 
     login() {
@@ -52,15 +52,22 @@ class CustomerDashboard extends React.Component {
     setUser(user) {
         console.log(user);
         if(user) {
+            let user_ = {
+                id: user.id,
+                name: user.first_name + ' ' + user.last_name,
+                username: user.username
+            };
+
             // set the react component state, followed by adding the item to the window storage
+            // stores states to render on the website
             this.setState({
-                userID: user.id,
+                user: user_,
                 modal: {
                     opened: false,
                     type: null
                 }
             }, () => {
-                window.localStorage.setItem('userID', user.id);
+                window.localStorage.setItem('user', user_);
             });
         }
     }
@@ -79,14 +86,23 @@ class CustomerDashboard extends React.Component {
             }
         }
 
+        if(this.state.user && this.state.user.id === 1 && this.state.user.username === 'admin') {
+            return <Navigate to='/admin'/>
+        }
+
         // render the customer dashboard
         return(
             <div>
                 <h1>CustomerDashboard</h1>
                 <div>
-                    {(this.state.userID) ? (
+                    {(this.state.user.id) ? (
                         <div>
-                            <button onClick={this.logout.bind(this)}>Logout</button>
+                            <div>
+                            <h4>Welcome {this.state.user.name}!</h4>
+                            </div>
+                            <div>
+                                <button onClick={this.logout.bind(this)}>Logout</button>
+                            </div>
                         </div>
                     ) : (
                         <div>

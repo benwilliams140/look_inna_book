@@ -19,9 +19,9 @@ create table location_address(
 
 create table publisher(
 	ID				serial,
-	name			varchar(15) not null,
-	email			varchar(40) not null,
-	phone_number	numeric(10, 0),
+	name			varchar(40) not null,
+	email			varchar(40) unique not null,
+	phone_number	numeric(10, 0) unique,
 	postal_code		char(6),
 	street_name		varchar(20),
 	street_number	int,
@@ -34,19 +34,19 @@ create table author(
 	ID				serial,
 	first_name		varchar(15) not null,
 	last_name		varchar(15) not null,
-	email			varchar(40) not null,
-	phone_number	numeric(10, 0),
+	email			varchar(40) unique not null,
+	phone_number	numeric(10, 0) unique,
 	primary key(ID)
 );
 
-create table customer(
+create table account(
 	ID				serial,
 	first_name		varchar(15) not null,
 	last_name		varchar(15) not null,
-	username		varchar(20) not null,
+	username		varchar(20) unique not null,
 	password		varchar(20) not null,
-	email			varchar(40) not null,
-	phone_number	numeric(10, 0),
+	email			varchar(40) unique not null,
+	phone_number	numeric(10, 0) unique,
 	primary key(ID)
 );
 
@@ -60,10 +60,11 @@ create table banking_info(
 
 create table book(
 	ISBN			numeric(10, 0),
-	name			varchar(30) not null,
+	name			varchar(80) not null,
 	description		varchar(200),
 	num_pages		int check (num_pages > 0),
 	price			numeric(5, 2) check (price > 0),
+	count			numeric(2, 0) check(count > 0),
 	publisher_id	int,
 	percentage_of_sales	numeric(3, 3) check (percentage_of_sales >= 0 and percentage_of_sales <= 1),
 	primary key(ISBN),
@@ -73,11 +74,11 @@ create table book(
 
 create table writes(
 	ISBN		numeric(10, 0),
-	author_id	int,
-	primary key(ISBN, author_id),
+	ID	int,
+	primary key(ISBN, ID),
 	foreign key(ISBN) references book
 		on delete cascade,
-	foreign key(author_id) references author(ID)
+	foreign key(ID) references author(ID)
 		on delete cascade
 );
 
@@ -100,21 +101,21 @@ create table belongs_to(
 
 create table owns(
 	ISBN			numeric(10, 0),
-	customer_id		int,
+	account_id		int,
 	count			numeric(2, 0) check(count > 0),
-	primary key(ISBN, customer_id),
+	primary key(ISBN, account_id),
 	foreign key(ISBN) references book
 		on delete cascade,
-	foreign key(customer_id) references customer(ID)
+	foreign key(account_id) references account(ID)
 		on delete cascade
 );
 
 create table checkout_basket(
 	ID		serial,
-	customer_id		int,
+	account_id		int,
 	primary key(ID),
-	foreign key(customer_id) references customer(ID)
-		on delete cascade
+	foreign key(account_id) references account(ID)
+		on delete set null
 );
 
 create table contains(
@@ -133,31 +134,24 @@ create table payment_info(
 	card_type		varchar(10) not null check (card_type in ('VISA', 'AMEX', 'MasterCard')),
 	csv				numeric(3, 0) not null check (csv > 0 and csv < 1000),
 	expiry			char(4) not null,
+	account_id		int not null,
 	postal_code		char(6),
 	street_name		varchar(20),
 	street_number 	int,
 	primary key(card_number),
 	foreign key(postal_code, street_name, street_number) references location_address
-		on delete set null
-);
-
-create table pays_with(
-	customer_id		int,
-	card_number		numeric(16,0),
-	primary key(customer_id, card_number),
-	foreign key(customer_id) references customer(ID)
-		on delete cascade,
-	foreign key(card_number) references payment_info
+		on delete set null,
+	foreign key(account_id) references account(ID)
 		on delete cascade
 );
 
 create table lives_at(
-	customer_id		int,
+	account_id		int,
 	postal_code		char(6),
 	street_name		varchar(20),
 	street_number	int,
-	primary key(customer_id, postal_code, street_name, street_number),
-	foreign key(customer_id) references customer(ID)
+	primary key(account_id, postal_code, street_name, street_number),
+	foreign key(account_id) references account(ID)
 		on delete cascade,
 	foreign key(postal_code, street_name, street_number) references location_address
 		on delete cascade
@@ -166,12 +160,12 @@ create table lives_at(
 create table book_order(
 	ID				serial,
 	card_number		numeric(16,0),
-	customer_id		int,
+	account_id		int,
 	date			char(8) not null,
 	primary key(ID),
-	foreign key(card_number) references payment_info
+	foreign key(card_number) references payment_info(card_number)
 		on delete set null,
-	foreign key(customer_id) references customer(ID)
+	foreign key(account_id) references account(ID)
 		on delete set null
 );
 
@@ -199,9 +193,3 @@ create table shipment(
 	foreign key(postal_code, street_name, street_number) references location_address
 		on delete set null
 );
-
-insert into account values(default, 'Ben', 'Williams', 'admin', 'pass', 'benwilliams@cmail.carleton.ca', 1234567890);
-
-select *
-from account
-where upper(first_name) like upper('%%')

@@ -6,16 +6,43 @@ class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+            firstName: '',
+            lastName: '',
+            username: '',
+            password: '',
+            email: '',
+            phoneNumber: '',
+            regErr: null
         };
     }
 
-    handleChange = (event) => {
+    componentDidMount() {
+        this.props.socket.on('registrationResult', (res) => {
+            if(res.err) {
+                this.setState({regErr: res.err});
+            }
+
+            this.props.setUser(res.user);
+        });
+    }
+
+    handleChange(event) {
         this.setState({[event.target.id]: event.target.value});
     }
 
-    register = async() => {
-        
+    register(event) {
+        event.preventDefault();
+
+        const accountInfo = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            username: this.state.username,
+            password: this.state.password,
+            email: this.state.email,
+            phoneNumber: this.state.phoneNumber
+        }
+
+        this.props.socket.emit('registerAccount', accountInfo);
     }
     
     render() {

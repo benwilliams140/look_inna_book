@@ -6,15 +6,25 @@ class Connection {
         this.io = io;
         this.database = new Database();
 
-        socket.on('registerCustomer', (customer) => this.handleCustomerRegistration(customer));
+        socket.on('registerAccount', (info) => this.handleAccountRegistration(info));
         socket.on('accountLogin', (credentials) => this.handleAccountLogin(credentials));
         socket.on('retrieveBooks', (filter) => this.handleBookSearch(filter));
 
         this.io.to(this.socket.id).emit('connection');
     }
 
-    handleCustomerRegistration(customer) {
-        this.database.addNewCustomer(customer);
+    handleAccountRegistration(info) {
+        this.database.addNewAccount(info)
+        .then((user) => {
+            this.socket.emit('registrationResult', {
+                user: user
+            });
+        })
+        .catch((err) => {
+            this.socket.emit('registrationResult', {
+                err: err
+            });
+        });
     }
 
     handleAccountLogin(credentials) {
