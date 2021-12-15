@@ -49,9 +49,19 @@ class CustomerDashboard extends React.Component {
         });
     }
 
+    clearModal() {
+        this.setState({
+            modal: {
+                opened: false,
+                type: null
+            }
+        })
+    }
+
     setUser(user) {
         console.log(user);
         if(user) {
+            // retrieve and calculate values in the right format
             let user_ = {
                 id: user.id,
                 name: user.first_name + ' ' + user.last_name,
@@ -77,15 +87,20 @@ class CustomerDashboard extends React.Component {
         if(this.state.modal.opened) {
             if(this.state.modal.type === 'login') {
                 return (
-                    <Login socket={this.props.socket} setUser={this.setUser.bind(this)}/>
+                    <Login  socket={this.props.socket}
+                            setUser={this.setUser.bind(this)}
+                            goToDashboard={this.clearModal.bind(this)}/>
                 );
             } else if(this.state.modal.type === 'register') {
                 return (
-                    <Register socket={this.props.socket} setUser={this.setUser.bind(this)}/>
+                    <Register   socket={this.props.socket}
+                                setUser={this.setUser.bind(this)}
+                                goToDashboard={this.clearModal.bind(this)}/>
                 )
             }
         }
 
+        // navigate to the admin dashboard if they login
         if(this.state.user && this.state.user.id === 1 && this.state.user.username === 'admin') {
             return <Navigate to='/admin'/>
         }
@@ -111,7 +126,9 @@ class CustomerDashboard extends React.Component {
                         </div>
                     )}
                 </div>
-                <BookBrowser socket={this.props.socket}/>
+                <div>
+                    <BookBrowser socket={this.props.socket}/>
+                </div>
             </div>
         );
     }

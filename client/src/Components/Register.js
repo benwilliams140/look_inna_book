@@ -31,7 +31,7 @@ class Register extends React.Component {
     }
 
     register(event) {
-        event.preventDefault();
+        event.preventDefault(); // stop the default behaviour, useful to stop auto refresh
 
         const accountInfo = {
             firstName: this.state.firstName,
@@ -43,6 +43,11 @@ class Register extends React.Component {
         }
 
         this.props.socket.emit('registerAccount', accountInfo);
+    }
+
+    cancel(event) {
+        event.preventDefault(); // stop the default behaviour, useful to stop auto refresh
+        this.props.goToDashboard(); // go back to main dashboard
     }
     
     render() {
@@ -75,6 +80,7 @@ class Register extends React.Component {
                         <input id='phoneNumber' onChange={this.handleChange.bind(this)}/>
                     </div>
                     <button onClick={this.register.bind(this)}>Register</button>
+                    <button onClick={this.cancel.bind(this)}>Cancel</button>
                 </form>
             </div>
         )

@@ -34,6 +34,11 @@ class Login extends React.Component {
 
         this.props.socket.emit('accountLogin', credentials);
     }
+
+    cancel(event) {
+        event.preventDefault(); // stop the default behaviour, useful to stop auto refresh
+        this.props.goToDashboard(); // go back to main dashboard
+    }
     
     render() {
         return(
@@ -51,6 +56,7 @@ class Login extends React.Component {
                         </div>
                         <div>
                             <button onClick = { this.login.bind(this) }>Login</button>
+                            <button onClick={this.cancel.bind(this)}>Cancel</button>
                         </div>
                     </form>
                 </div>

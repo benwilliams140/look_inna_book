@@ -4,13 +4,12 @@ class BookBrowser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchKey: '',
-            /*filterBy: {
+            filterBy: {
                 author: false,
                 isbn: false,
                 bookName: true,
                 searchKey: ''
-            },*/
+            },
             books: []
         };
     }
@@ -24,19 +23,28 @@ class BookBrowser extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({[event.target.id]: event.target.value},
-            this.retrieveBooks);
+        // set the nested attributes in state.filterBy
+        this.setState({filterBy: {...this.state.filterBy, 
+                                [event.target.id]: event.target.value}},
+                        this.retrieveBooks);
     }
 
     retrieveBooks(event) {
-        this.props.socket.emit('retrieveBooks', this.state.searchKey);
+        this.props.socket.emit('retrieveBooks', this.state.filterBy);
+    }
+
+    viewBook(event) {
+        console.log(event.target.innerText);
     }
 
     renderBooks() {
+        // map each element in the books array to a table row
         return Object.keys(this.state.books).map((isbn, index) => {
             return(
                 <tr key={isbn}>
-                    <td>{isbn}</td>
+                    <td onClick={this.viewBook.bind(this)} style={{cursor:'pointer',color:'blue',textDecoration:'underline'}}>
+                        {isbn}
+                    </td>
                     <td>{this.state.books[isbn].name}</td>
                     <td>{this.state.books[isbn].authors}</td>
                     <td>{this.state.books[isbn].price}</td>

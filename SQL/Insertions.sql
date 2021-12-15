@@ -30,7 +30,7 @@ insert into author values(default, 'Rick', 'Riordan', 'rickr@gmail.com', 4165668
 insert into author values(default, 'Stephen', 'King', 'stephenking@yahoo.ca', 4167552314);
 insert into author values(default, 'Ahmed', 'El-Roby', 'ahmedelroby@cmail.carleton.ca', 9058221234);
 
-/*Books*/
+/*Books + Author Relationships*/
 insert into book values(1112223334, 'Harry Potter and the Sorcerer''s Stone', 'Harry Potter finds out he is a wizard and goes to Hogwarts.', 254, 10.99, 10, 1, 0.6);
 insert into book values(1122334455, 'Harry Potter and the Chamber of Secrets', 'Harry Potter must save his friends sister, and has his first encounter with Lord Voldemort.', 249, 10.99, 12, 1, 0.45);
 insert into book values(1234567890, 'Harry Potter and the Prisoner of Azkaban', 'Harry has a death omen, a black dog, following him around.', 317, 11.99, 16, 1, 0.45);

@@ -61,7 +61,7 @@ class Database {
     searchForBooks(filter) {
         return new Promise((resolve, reject) => {
             this.pool.query("select isbn, name, price, first_name, last_name from book natural join writes natural join author where upper(book.name) like upper('%' || $1 || '%')",
-                [filter], (err, res) => {
+                [filter.searchKey], (err, res) => {
                     if(err) reject(err);
 
                     //console.log(res);
