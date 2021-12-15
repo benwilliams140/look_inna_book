@@ -60,29 +60,40 @@ class Database {
 
     searchForBooks(filter) {
         return new Promise((resolve, reject) => {
-            this.pool.query("select isbn, name, price, first_name, last_name from book natural join writes natural join author where upper(book.name) like upper('%' || $1 || '%')",
-                [filter.searchKey], (err, res) => {
+            // build the query from search options
+            let query = "select * from book_info";
+
+            let filtering = filter.bookName || filter.author; // || filter.isbn;
+            if(filtering) query += " where"
+
+            if(filter.bookName) query += " upper(book_info.name) like upper('%' || $1 || '%')";
+            if(filter.bookName && filter.author) query += " or"
+            if(filter.author) query += " upper(book_info.last_name) like upper('%' || $1 || '%')";
+            //if(filter.isbn) query += ` where upper(book_info.last_name) like upper('%' || $1 || '%')`;
+
+            this.pool.query(query,
+                filtering ? [filter.searchKey] : [], (err, res) => {
                     if(err) reject(err);
 
-                    //console.log(res);
-
                     let books = {};
-                    for(let i = 0; i < res.rowCount; i++) {
-                        let book = res.rows[i];
-                        if(books[book.isbn]) {
-                            // book is already present and has a co-author
-                            let name = book.first_name + ' ' + book.last_name;
-                            books[book.isbn].authors.push(name);
-                        } else {
-                            // book needs to be added
-                            let bookObj = {
-                                name: book.name,
-                                authors: [
-                                    book.first_name + ' ' + book.last_name
-                                ],
-                                price: book.price
-                            };
-                            books[book.isbn] = bookObj;
+                    if(res) {
+                        for(let i = 0; i < res.rowCount; i++) {
+                            let book = res.rows[i];
+                            if(books[book.isbn]) {
+                                // book is already present and has a co-author
+                                let name = book.first_name + ' ' + book.last_name;
+                                books[book.isbn].authors.push(name);
+                            } else {
+                                // book needs to be added
+                                let bookObj = {
+                                    name: book.name,
+                                    authors: [
+                                        book.first_name + ' ' + book.last_name
+                                    ],
+                                    price: book.price
+                                };
+                                books[book.isbn] = bookObj;
+                            }
                         }
                     }
                     resolve(books);

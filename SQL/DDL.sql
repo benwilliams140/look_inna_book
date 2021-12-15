@@ -193,3 +193,7 @@ create table shipment(
 	foreign key(postal_code, street_name, street_number) references location_address
 		on delete set null
 );
+
+create view book_info as
+select isbn, name, price, first_name, last_name
+from book natural join writes natural join author;

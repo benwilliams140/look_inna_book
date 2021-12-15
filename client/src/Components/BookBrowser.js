@@ -29,6 +29,13 @@ class BookBrowser extends React.Component {
                         this.retrieveBooks);
     }
 
+    handleCheckboxChange(event) {
+        // set the nested attributes in state.filterBy
+        this.setState({filterBy: {...this.state.filterBy, 
+                                [event.target.id]: event.target.checked}},
+                        this.retrieveBooks);
+    }
+
     retrieveBooks(event) {
         this.props.socket.emit('retrieveBooks', this.state.filterBy);
     }
@@ -60,6 +67,14 @@ class BookBrowser extends React.Component {
                 <h3>Book Browser</h3>
                 <input id='searchKey' onChange={this.handleChange.bind(this)}/>
                 <button onClick={this.retrieveBooks.bind(this)}>Search</button>
+                <br/>
+                <label htmlFor='searchByAtt'>Search By:</label>
+                <span id='searchByAtt'>
+                    <input id='author' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.author}/>
+                    <label htmlFor='author'>Author</label>
+                    <input id='bookName' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.bookName}/>
+                    <label htmlFor='bookName'>Book Name</label>
+                </span>
             </form>
             <div>
                 <table>
