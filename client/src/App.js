@@ -3,8 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import io from 'socket.io-client'
 
 import './App.css';
-import CustomerDashboard from './Pages/CustomerDashboard';
-import OwnerDashboard from './Pages/OwnerDashboard';
+import Dashboard from './Pages/Dashboard';
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -22,10 +21,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path = '/' element = {
-            <CustomerDashboard socket={socket}/> 
-          } />
-          <Route path = '/admin' element = {
-            <OwnerDashboard socket={socket}/>
+            <Dashboard socket={socket}/> 
           } />
         </Routes>
       </BrowserRouter>

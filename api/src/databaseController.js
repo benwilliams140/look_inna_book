@@ -27,17 +27,19 @@ class Database {
                     if (err) reject(err);
 
                     // verify account was added
-                    if(res.rowCount && res.rowCount === 1) {
+                    if(res && res.rowCount && res.rowCount === 1) {
                         this.pool.query('SELECT * FROM account WHERE username = $1',
                             [account.username], (err, res) => {
                                 if(err) reject(err);
 
-                                if(res.rowCount && res.rowCount === 1) {
+                                if(res && res.rowCount && res.rowCount === 1) {
                                     resolve(res.rows[0]);
                                 } else {
                                     resolve(null);
                                 }
                             });
+                    } else {
+                        reject(new Error("Account wasn't registered"));
                     }
                 });
         });
