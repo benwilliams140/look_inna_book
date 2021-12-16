@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 import React from 'react'
 
 import Login from '../Components/Login'
@@ -11,7 +10,7 @@ class Dashboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: window.localStorage.getItem("user") || {},
+            user: JSON.parse(window.localStorage.getItem('user')) || {},
             modal: {
                 opened: false,
                 type: null
@@ -20,7 +19,7 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount() {
-
+        
     }
 
     logout() {
@@ -52,7 +51,7 @@ class Dashboard extends React.Component {
                 opened: false,
                 type: null
             }
-        })
+        });
     }
 
     setUser(user) {
@@ -73,7 +72,7 @@ class Dashboard extends React.Component {
                     type: null
                 }
             }, () => {
-                window.localStorage.setItem('user', user_);
+                window.localStorage.setItem('user', JSON.stringify(user_));
             });
         }
     }

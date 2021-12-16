@@ -2,6 +2,7 @@
 import React from 'react'
 
 import BookBrowser from '../Components/BookBrowser';
+import AccountInfo from '../Components/AccountInfo';
 
 class CustomerDashboard extends React.Component {
     constructor(props) {
@@ -18,8 +19,17 @@ class CustomerDashboard extends React.Component {
 
     }
 
-    handleChange = (event) => {
+    handleChange(event) {
         this.setState({[event.target.id]: event.target.value});
+    }
+
+    viewAccount(event) {
+        this.setState({
+            modal: {
+                opened: true,
+                type: 'account'
+            }
+        });
     }
 
     clearModal() {
@@ -28,10 +38,18 @@ class CustomerDashboard extends React.Component {
                 opened: false,
                 type: null
             }
-        })
+        });
     }
 
     render() {
+        if(this.state.modal.opened) {
+            if(this.state.modal.type === 'account') {
+                return(
+                    <AccountInfo    socket={this.props.socket}
+                                    goToDashboard={this.clearModal.bind(this)}/>
+                )
+            }
+        }
         // render the customer dashboard
         return(
             <div>
@@ -43,6 +61,7 @@ class CustomerDashboard extends React.Component {
                             <h4>Welcome {this.props.user.name}!</h4>
                             </div>
                             <div>
+                                <button onClick={this.viewAccount.bind(this)}>View Account</button>
                                 <button onClick={this.props.logout}>Logout</button>
                             </div>
                         </div>

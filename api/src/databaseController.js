@@ -28,6 +28,7 @@ class Database {
 
                     // verify account was added
                     if(res && res.rowCount && res.rowCount === 1) {
+                        console.log(res);
                         this.pool.query('SELECT * FROM account WHERE username = $1',
                             [account.username], (err, res) => {
                                 if(err) reject(err);
