@@ -9,8 +9,14 @@ class Connection {
         socket.on('registerAccount', (info) => this.handleAccountRegistration(info));
         socket.on('accountLogin', (credentials) => this.handleAccountLogin(credentials));
         socket.on('retrieveBooks', (filter) => this.handleBookSearch(filter));
+        socket.on('retrievePublishers', () => this.handlePublisherRequest());
+        socket.on('retrieveAuthors', () => this.handleAuthorRequest());
+        socket.on('retrieveGenres', () => this.handleGenreRequest());
+        socket.on('addBook', (bookInfo) => this.handleBookAddition(bookInfo));
+
 
         this.io.to(this.socket.id).emit('connection');
+
     }
 
     handleAccountRegistration(info) {
@@ -41,6 +47,46 @@ class Connection {
         this.database.searchForBooks(filter)
         .then((books) => {
             this.socket.emit('books', books);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleBookAddition(bookInfo) {
+        this.database.addBook(bookInfo)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handlePublisherRequest() {
+        this.database.retrievePublishers()
+        .then((publishers) => {
+            this.socket.emit('publishers', publishers);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleAuthorRequest() {
+        this.database.retrieveAuthors()
+        .then((authors) => {
+            this.socket.emit('authors', authors);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleGenreRequest() {
+        this.database.retrieveGenres()
+        .then((genres) => {
+            this.socket.emit('genres', genres);
         })
         .catch((err) => {
             throw err;

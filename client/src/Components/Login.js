@@ -45,7 +45,7 @@ class Login extends React.Component {
             <div>
                 <h3>Login</h3>
                 <div>
-                    <form action = ''>
+                    <form>
                         <div>
                             <label htmlFor='username'>Username</label>
                             <input id='username' onChange = { this.handleChange.bind(this) }></input>

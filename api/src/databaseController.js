@@ -16,7 +16,7 @@ class Database {
         // handle any client-side errors
         this.pool.on('error', (err) => {
             console.error(err);
-            process.exit(-1);
+            //process.exit(-1);
         });
     }
 
@@ -48,11 +48,12 @@ class Database {
 
     accountLogin(credentials) {
         return new Promise((resolve, reject) => {
+            // query for account by username and password
             this.pool.query('SELECT * FROM account WHERE username=$1 AND password=$2;',
                 [credentials.username, credentials.password], (err, res) => {
                     if(err) reject(err);
 
-                    if(res.rowCount && res.rowCount === 1) {
+                    if(res && res.rowCount && res.rowCount === 1) {
                         resolve(res.rows[0]);
                     } else {
                         resolve(null);
@@ -100,6 +101,54 @@ class Database {
                         }
                     }
                     resolve(books);
+            });
+        });
+    }
+
+    retrievePublishers() {
+        return new Promise((resolve, reject) => {
+            // query for all publishers
+            this.pool.query('SELECT * FROM publisher;',
+                [], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rows && res.rowCount > 0) {
+                        resolve(res.rows);
+                    } else {
+                        resolve([]);
+                    }
+            });
+        });
+    }
+
+    retrieveAuthors() {
+        return new Promise((resolve, reject) => {
+            // query for all authors
+            this.pool.query('SELECT * FROM author;',
+                [], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rows && res.rowCount > 0) {
+                        resolve(res.rows);
+                    } else {
+                        resolve([]);
+                    }
+            });
+        });
+    }
+
+    retrieveGenres() {
+        return new Promise((resolve, reject) => {
+            // query for all genres
+            this.pool.query('SELECT * FROM genre;',
+                [], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rows && res.rowCount > 0) {
+                        resolve(res.rows);
+                    } else {
+                        resolve([]);
+                    }
             });
         });
     }

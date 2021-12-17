@@ -66,3 +66,42 @@ insert into book values(6754324560, 'Database Design', 'Designing databases usin
 insert into writes values(4583954340, 5);
 insert into writes values(6754324560, 5);
 
+/*Genres + Book Relationships*/
+insert into genre values(default, 'Mystery', 'The plot revolves around a crime that must be solved by a protagonist(s).');
+insert into genre values(default, 'Fantasy', 'The plot is set in a fictional world.');
+insert into genre values(default, 'Action & Adventure', 'The protagonist must achieve a certain goal while overcoming obstacles in the process.');
+insert into genre values(default, 'Science & Technology', 'Non-fiction about topics and advances in different areas of science and technology.');
+insert into genre values(default, 'Historical Fiction', 'Books set in the past with accurate details of the setting.');
+
+/*Game of Thrones*/
+insert into belongs_to values(4356549101, 2);
+insert into belongs_to values(1209304832, 2);
+insert into belongs_to values(4309053002, 2);
+
+insert into belongs_to values(4356549101, 3);
+insert into belongs_to values(1209304832, 3);
+insert into belongs_to values(4309053002, 3);
+
+/*Harry Potter*/
+insert into belongs_to values(1112223334, 1);
+insert into belongs_to values(1122334455, 1);
+insert into belongs_to values(1234567890, 1);
+insert into belongs_to values(1111222233, 1);
+insert into belongs_to values(1111122222, 1);
+insert into belongs_to values(2222233333, 1);
+insert into belongs_to values(3333344444, 1);
+
+insert into belongs_to values(1112223334, 2);
+insert into belongs_to values(1122334455, 2);
+insert into belongs_to values(1234567890, 2);
+insert into belongs_to values(1111222233, 2);
+insert into belongs_to values(1111122222, 2);
+insert into belongs_to values(2222233333, 2);
+insert into belongs_to values(3333344444, 2);
+
+/*A Made Up Book*/
+insert into belongs_to values(8483979223, 5);
+
+/*Database Books*/
+insert into belongs_to values(4583954340, 4);
+insert into belongs_to values(6754324560, 4);
