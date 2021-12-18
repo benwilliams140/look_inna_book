@@ -29,6 +29,9 @@ insert into author values(default, 'George', 'R.R. Martin', 'grrmartin@outlook.c
 insert into author values(default, 'Rick', 'Riordan', 'rickr@gmail.com', 4165668220);
 insert into author values(default, 'Stephen', 'King', 'stephenking@yahoo.ca', 4167552314);
 insert into author values(default, 'Ahmed', 'El-Roby', 'ahmedelroby@cmail.carleton.ca', 9058221234);
+insert into author values(default, 'Ben', 'Williams', 'benwilliams@cmail.carleton.ca', 2893381357);
+insert into author values(default, 'J.R.R.', 'Tolkien', 'jrrt@outlook.com', null);
+insert into author values(default, 'William', 'Golding', 'william@golding.com', null);
 
 /*Books + Author Relationships*/
 insert into book values(1112223334, 'Harry Potter and the Sorcerer''s Stone', 'Harry Potter finds out he is a wizard and goes to Hogwarts.', 254, 10.99, 10, 1, 0.6);
@@ -46,6 +49,22 @@ insert into writes values(1111222233, 1);
 insert into writes values(1111122222, 1);
 insert into writes values(2222233333, 1);
 insert into writes values(3333344444, 1);
+
+insert into book values(9841243827, 'OpenGL Game Development', 'An introduction to 3D game development with OpenGL', 227, 59.99, 11, 2, 0.3);
+
+insert into writes values(9841243827, 6);
+
+insert into book values(1000000000, 'The Lord of the Rings: The Fellowship of the Ring', 'The first LOTR book.', 123, 10.99, 12, 3, 0.3);
+insert into book values(1000000001, 'The Lord of the Rings: The Two Towers', 'The second LOTR book.', 321, 16.99, 15, 3, 0.3);
+insert into book values(1000000002, 'The Lord of the Rings: The Return of the King', 'The third LOTR book.', 523, 20.99, 10, 3, 0.3);
+
+insert into writes values(1000000000, 7);
+insert into writes values(1000000001, 7);
+insert into writes values(1000000002, 7);
+
+insert into book values(1000000003, 'Lord of the Flies', 'Focuses on a group of British boys stranded on an island.', 314, 14.49, 10, 4, 0.25);
+
+insert into writes values(1000000003, 8);
 
 insert into book values(4356549101, 'A Game of Thrones', 'The first novel in the Game of Thrones series', 704, 32.95, 17, 4, 0.25);
 insert into book values(1209304832, 'A Clash of Kings', 'The second book in the Game of Thrones series', 648, 30.99, 12, 4, 0.25);
@@ -72,6 +91,14 @@ insert into genre values(default, 'Fantasy', 'The plot is set in a fictional wor
 insert into genre values(default, 'Action & Adventure', 'The protagonist must achieve a certain goal while overcoming obstacles in the process.');
 insert into genre values(default, 'Science & Technology', 'Non-fiction about topics and advances in different areas of science and technology.');
 insert into genre values(default, 'Historical Fiction', 'Books set in the past with accurate details of the setting.');
+
+/*Lord of the Rings*/
+insert into belongs_to values(1000000000, 2);
+insert into belongs_to values(1000000001, 2);
+insert into belongs_to values(1000000002, 2);
+
+/*Lord of the Flies*/
+insert into belongs_to values(1000000003, 3);
 
 /*Game of Thrones*/
 insert into belongs_to values(4356549101, 2);
@@ -105,3 +132,6 @@ insert into belongs_to values(8483979223, 5);
 /*Database Books*/
 insert into belongs_to values(4583954340, 4);
 insert into belongs_to values(6754324560, 4);
+
+/*OpenGL Game Development*/
+insert into belongs_to values(9841243827, 4);
