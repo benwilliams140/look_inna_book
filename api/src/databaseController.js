@@ -171,28 +171,28 @@ class Database {
     searchForBooks(filter) {
         return new Promise((resolve, reject) => {
             // build the query from search options
-            //let query = 'select isbn, name, price, first_name, last_name from book natural join writes natural join author';
-            let query = 'select * from book_info'
+            let query = 'SELECT * FROM book_info'
             let queryParams = [ filter.searchKey ];
 
             let filtering = filter.bookName || filter.author; // || filter.isbn;
-            if(filtering) query += ' where'
+            if(filtering) query += ' WHERE'
 
             if(filter.bookName) {
-                query += " upper(name) like upper('%' || $1 || '%')";
+                query += " UPPER(book_name) LIKE UPPER('%' || $1 || '%')";
                 let counter = 2;
                 filter.searchKey.split(' ').forEach((searchWord) => {
                     if(searchWord.length > 3) {
-                        query += ` or upper(name) like upper('%' || $${counter++} || '%')`;
+                        query += ` or UPPER(book_name) LIKE UPPER('%' || $${counter++} || '%')`;
                         queryParams.push(searchWord);
                     }
                 });
-                console.log(query);
-                console.log(queryParams);
             }
-            if(filter.bookName && filter.author) query += " or"
-            if(filter.author) query += " upper(last_name) like upper('%' || $1 || '%')";
-            //if(filter.isbn) query += ` where upper(book_info.last_name) like upper('%' || $1 || '%')`;
+            if(filter.bookName && filter.author) query += " OR";
+            if(filter.author) query += " UPPER(CONCAT(first_name, ' ', last_name)) LIKE UPPER('%' || $1 || '%')";
+            if(filter.author && filter.isbn || filter.bookName && filter.isbn) query += " OR";
+            if(filter.isbn) query += " CAST(isbn AS TEXT) LIKE ('%' || $1 || '%')";
+            if(filter.isbn && filter.genre || filter.author && filter.genre || filter.bookName && filter.genre) query += " OR";
+            if(filter.genre) query += " UPPER(genre_name) LIKE UPPER('%' || $1 || '%')";
 
             // main query, find books with an exact match
             this.pool.query(query,
@@ -204,17 +204,25 @@ class Database {
                         for(let i = 0; i < res.rowCount; i++) {
                             let book = res.rows[i];
                             if(books[book.isbn]) {
-                                // book is already present and has a co-author
+                                // book is already present and has a co-author or multiple genres
                                 let name = book.first_name + ' ' + book.last_name;
-                                books[book.isbn].authors.push(name);
+                                if(!books[book.isbn].authors.includes(name)) {
+                                    books[book.isbn].authors.push(name);
+                                }
+                                if(!books[book.isbn].genres.includes(book.genre_name)) {
+                                    books[book.isbn].genres.push(book.genre_name);
+                                }
                             } else {
                                 // book needs to be added
                                 let bookObj = {
-                                    name: book.name,
+                                    name: book.book_name,
                                     authors: [
                                         book.first_name + ' ' + book.last_name
                                     ],
-                                    price: book.price
+                                    price: book.price,
+                                    genres: [
+                                        book.genre_name
+                                    ]
                                 };
                                 books[book.isbn] = bookObj;
                             }
