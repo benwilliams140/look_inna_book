@@ -173,17 +173,30 @@ class Database {
             // build the query from search options
             //let query = 'select isbn, name, price, first_name, last_name from book natural join writes natural join author';
             let query = 'select * from book_info'
+            let queryParams = [ filter.searchKey ];
 
             let filtering = filter.bookName || filter.author; // || filter.isbn;
             if(filtering) query += ' where'
 
-            if(filter.bookName) query += " upper(name) like upper('%' || $1 || '%')";
+            if(filter.bookName) {
+                query += " upper(name) like upper('%' || $1 || '%')";
+                let counter = 2;
+                filter.searchKey.split(' ').forEach((searchWord) => {
+                    if(searchWord.length > 3) {
+                        query += ` or upper(name) like upper('%' || $${counter++} || '%')`;
+                        queryParams.push(searchWord);
+                    }
+                });
+                console.log(query);
+                console.log(queryParams);
+            }
             if(filter.bookName && filter.author) query += " or"
             if(filter.author) query += " upper(last_name) like upper('%' || $1 || '%')";
             //if(filter.isbn) query += ` where upper(book_info.last_name) like upper('%' || $1 || '%')`;
 
+            // main query, find books with an exact match
             this.pool.query(query,
-                filtering ? [filter.searchKey] : [], (err, res) => {
+                filtering ? queryParams : [], (err, res) => {
                     if(err) reject(err);
 
                     let books = {};
