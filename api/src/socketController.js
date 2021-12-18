@@ -41,7 +41,7 @@ class Connection {
             this.socket.emit('user', user);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error logging in, please try again.');
         });
     }
 
@@ -51,7 +51,7 @@ class Connection {
             this.socket.emit('books', books);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error searching for book');
         });
     }
 
@@ -61,7 +61,7 @@ class Connection {
             this.socket.emit('locationAdded');
         })
         .catch((err) => {
-            throw err;
+            console.log('Error adding location');
         });
     }
 
@@ -71,7 +71,7 @@ class Connection {
             this.socket.emit('publisherAdded', res);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error adding publisher');
         });
     }
 
@@ -81,7 +81,7 @@ class Connection {
             this.socket.emit('authorAdded', res);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error adding author');
         });
     }
 
@@ -91,18 +91,17 @@ class Connection {
             this.socket.emit('genreAdded', res);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error adding genre');
         });
     }
 
     handleBookAddition(bookInfo) {
         this.database.addBook(bookInfo)
         .then((res) => {
-            console.log(res);
-            this.socket.emit('bookAdded', res);
+            //this.socket.emit('bookAdded', res);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error adding book');
         });
     }
 
@@ -112,7 +111,7 @@ class Connection {
             this.socket.emit('publishers', publishers);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error retrieving publishers');
         });
     }
 
@@ -122,7 +121,7 @@ class Connection {
             this.socket.emit('authors', authors);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error retrieving authors');
         });
     }
 
@@ -132,7 +131,7 @@ class Connection {
             this.socket.emit('genres', genres);
         })
         .catch((err) => {
-            throw err;
+            console.log('Error retrieving genres');
         });
     }
 };

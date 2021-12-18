@@ -116,12 +116,12 @@ class AddBook extends React.Component {
             price: this.state.price,
             count: this.state.count,
             percentage_of_sales: this.state.percentage_of_sales,
-            publisher_id: this.state.selectedPublisher.publisher_id,
+            publisher_id: this.state.selectedPublisher,
             author_ids: [
-                this.state.selectedAuthor.author_id
+                this.state.selectedAuthor
             ],
             genre_ids: [
-                this.state.selectedGenre.genre_id
+                this.state.selectedGenre
             ]
         }
 

@@ -145,7 +145,25 @@ class Database {
                     info.price, info.count, info.publisher_id, info.percentage_of], (err, res) => {
                     if(err) reject(err);
 
-                    resolve(res);
+                    if(res && res.rowCount === 1) {
+                        // insert genre relationships
+                        info.genre_ids.forEach((id) => {
+                            this.pool.query('INSERT INTO belongs_to values($1, $2);',
+                                [info.isbn, id], (err, res) => {
+                                    if(err) reject(err);
+                            });
+                        });
+
+                        // insert author relationships
+                        info.author_ids.forEach((id) => {
+                            this.pool.query('INSERT INTO writes values($1, $2);',
+                                [info.isbn, id], (err, res) => {
+                                    if(err) reject(err);
+                            });
+                        });
+
+                        resolve();
+                    }
             });
         });
     }
@@ -153,14 +171,15 @@ class Database {
     searchForBooks(filter) {
         return new Promise((resolve, reject) => {
             // build the query from search options
-            let query = "select * from book_info";
+            //let query = 'select isbn, name, price, first_name, last_name from book natural join writes natural join author';
+            let query = 'select * from book_info'
 
             let filtering = filter.bookName || filter.author; // || filter.isbn;
-            if(filtering) query += " where"
+            if(filtering) query += ' where'
 
-            if(filter.bookName) query += " upper(book_info.name) like upper('%' || $1 || '%')";
+            if(filter.bookName) query += " upper(name) like upper('%' || $1 || '%')";
             if(filter.bookName && filter.author) query += " or"
-            if(filter.author) query += " upper(book_info.last_name) like upper('%' || $1 || '%')";
+            if(filter.author) query += " upper(last_name) like upper('%' || $1 || '%')";
             //if(filter.isbn) query += ` where upper(book_info.last_name) like upper('%' || $1 || '%')`;
 
             this.pool.query(query,
