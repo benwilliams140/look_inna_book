@@ -8,6 +8,7 @@ class BookBrowser extends React.Component {
                 author: false,
                 isbn: false,
                 bookName: true,
+                genre: false,
                 searchKey: ''
             },
             books: []
@@ -55,6 +56,7 @@ class BookBrowser extends React.Component {
                     <td>{this.state.books[isbn].name}</td>
                     <td>{this.state.books[isbn].authors}</td>
                     <td>{this.state.books[isbn].price}</td>
+                    <td>{this.state.books[isbn].genres}</td>
                 </tr>
             );
         });
@@ -70,10 +72,14 @@ class BookBrowser extends React.Component {
                 <br/>
                 <label htmlFor='searchByAtt'>Search By:</label>
                 <span id='searchByAtt'>
-                    <input id='author' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.author}/>
-                    <label htmlFor='author'>Author</label>
                     <input id='bookName' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.bookName}/>
                     <label htmlFor='bookName'>Book Name</label>
+                    <input id='author' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.author}/>
+                    <label htmlFor='author'>Author</label>
+                    <input id='isbn' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.isbn}/>
+                    <label htmlFor='isbn'>ISBN</label>
+                    <input id='genre' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.genre}/>
+                    <label htmlFor='genre'>Genre</label>
                 </span>
             </form>
             <div>
