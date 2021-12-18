@@ -16,10 +16,11 @@ class AddAuthor extends React.Component {
     }
 
     componentDidMount() {
-
+        this.props.socket.on('authorAdded', (author) => this.props.addAndSelectAuthor(author));
     }
 
-    submit() {
+    submit(event) {
+        event.preventDefault();
         this.props.socket.emit('addAuthor', this.state);
     }
 

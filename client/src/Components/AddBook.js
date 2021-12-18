@@ -45,6 +45,24 @@ class AddBook extends React.Component {
         });
     }
 
+    addAuthor(author) {
+        let list = this.state.authors;
+        list.push(author);
+        this.setState({
+            authors: list,
+            selectedAuthor: author.id
+        });
+    }
+
+    addGenre(genre) {
+        let list = this.state.genres;
+        list.push(genre);
+        this.setState({
+            genres: list,
+            selectedGenre: genre.id
+        });
+    }
+
     retrievePublishers() {
         this.props.socket.on('publishers', (publishers) => {
             this.setState({
@@ -82,7 +100,7 @@ class AddBook extends React.Component {
 
     // submits the form, adding all necessary components to the database
     submit(event) {
-        if(event.bubbles) return;
+        //if(event.bubbles) return;
 
         if(this.state.selectedPublisher === 'new' ||
             this.state.selectedAuthor === 'new' ||
@@ -132,7 +150,7 @@ class AddBook extends React.Component {
         return (
             <div>
                 <h2>Add Book</h2>
-                <form>
+                <form onSubmit={this.submit.bind(this)}>
                     <div>
                         <h4>Book Information</h4>
                         <label htmlFor='isbn'>ISBN: </label>
@@ -179,7 +197,8 @@ class AddBook extends React.Component {
                         </select>
                         {
                             this.state.selectedAuthor === 'new' ?
-                            <AddAuthor  socket={this.props.socket}/> :
+                            <AddAuthor  socket={this.props.socket}
+                                        addAndSelectAuthor={this.addAuthor.bind(this)}/> :
                             <span></span>
                         }
                     </div>
@@ -192,12 +211,13 @@ class AddBook extends React.Component {
                         </select>
                         {
                             this.state.selectedGenre === 'new' ?
-                            <AddGenre   socket={this.props.socket}/> :
+                            <AddGenre   socket={this.props.socket}
+                                        addAndSelectGenre={this.addGenre.bind(this)}/> :
                             <span></span>
                         }
                     </div>
                     <br/>
-                    <button onClick={this.submit.bind(this)}>Submit</button>
+                    <button type='submit'>Submit</button>
                     <button onClick={this.cancel.bind(this)}>Cancel</button>
                 </form>
             </div>

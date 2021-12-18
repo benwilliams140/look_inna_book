@@ -93,7 +93,7 @@ class Database {
                                 if(err) reject(err);
 
                                 resolve(res.rows[0]);
-                            });
+                        });
                     }
             });
         });
@@ -106,8 +106,13 @@ class Database {
                 [info.first_name, info.last_name, info.email, info.phone_number], (err, res) => {
                     if(err) reject(err);
 
-                    if(res) {
-                        resolve(res.rows);
+                    if(res && res.rowCount === 1) {
+                        this.pool.query('SELECT * FROM author WHERE email LIKE $1',
+                            [info.email], (err, res) => {
+                                if(err) reject(err);
+
+                                resolve(res.rows[0]);
+                        });
                     }
             });
         });
@@ -120,8 +125,13 @@ class Database {
                 [info.name, info.description], (err, res) => {
                     if(err) reject(err);
 
-                    if(res) {
-                        resolve(res.rows);
+                    if(res && res.rowCount === 1) {
+                        this.pool.query('SELECT * FROM genre WHERE name like $1',
+                            [info.name], (err, res) => {
+                                if(err) reject(err);
+
+                                resolve(res.rows[0]);
+                        });
                     }
             });
         });
@@ -135,9 +145,7 @@ class Database {
                     info.price, info.count, info.publisher_id, info.percentage_of], (err, res) => {
                     if(err) reject(err);
 
-                    if(res) {
-                        resolve(res.rows);
-                    }
+                    resolve(res);
             });
         });
     }

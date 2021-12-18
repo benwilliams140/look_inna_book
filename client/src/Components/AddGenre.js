@@ -14,10 +14,11 @@ class AddGenre extends React.Component {
     }
 
     componentDidMount() {
-
+        this.props.socket.on('genreAdded', (genre) => this.props.addAndSelectGenre(genre));
     }
 
-    submit() {
+    submit(event) {
+        event.preventDefault();
         this.props.socket.emit('addGenre', this.state);
     }
 

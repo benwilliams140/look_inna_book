@@ -78,7 +78,7 @@ class Connection {
     handleAuthorAddition(authorInfo) {
         this.database.addAuthor(authorInfo)
         .then((res) => {
-            console.log(res);
+            this.socket.emit('authorAdded', res);
         })
         .catch((err) => {
             throw err;
@@ -88,7 +88,7 @@ class Connection {
     handleGenreAddition(genreInfo) {
         this.database.addGenre(genreInfo)
         .then((res) => {
-            console.log(res);
+            this.socket.emit('genreAdded', res);
         })
         .catch((err) => {
             throw err;
@@ -99,6 +99,7 @@ class Connection {
         this.database.addBook(bookInfo)
         .then((res) => {
             console.log(res);
+            this.socket.emit('bookAdded', res);
         })
         .catch((err) => {
             throw err;
