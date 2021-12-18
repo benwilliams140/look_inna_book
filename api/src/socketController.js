@@ -12,11 +12,13 @@ class Connection {
         socket.on('retrievePublishers', () => this.handlePublisherRequest());
         socket.on('retrieveAuthors', () => this.handleAuthorRequest());
         socket.on('retrieveGenres', () => this.handleGenreRequest());
+        socket.on('addLocation', (locationInfo) => this.handleLocationAddition(locationInfo));
+        socket.on('addPublisher', (publisherInfo) => this.handlePublisherAddition(publisherInfo));
+        socket.on('addAuthor', (authorInfo) => this.handleAuthorAddition(authorInfo));
+        socket.on('addGenre', (genreInfo) => this.handleGenreAddition(genreInfo));
         socket.on('addBook', (bookInfo) => this.handleBookAddition(bookInfo));
 
-
         this.io.to(this.socket.id).emit('connection');
-
     }
 
     handleAccountRegistration(info) {
@@ -47,6 +49,46 @@ class Connection {
         this.database.searchForBooks(filter)
         .then((books) => {
             this.socket.emit('books', books);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleLocationAddition(locationInfo) {
+        this.database.addLocation(locationInfo)
+        .then(() => {
+            this.socket.emit('locationAdded');
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handlePublisherAddition(publisherInfo) {
+        this.database.addPublisher(publisherInfo)
+        .then((res) => {
+            this.socket.emit('publisherAdded', res);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleAuthorAddition(authorInfo) {
+        this.database.addAuthor(authorInfo)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((err) => {
+            throw err;
+        });
+    }
+
+    handleGenreAddition(genreInfo) {
+        this.database.addGenre(genreInfo)
+        .then((res) => {
+            console.log(res);
         })
         .catch((err) => {
             throw err;

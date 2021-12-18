@@ -62,6 +62,86 @@ class Database {
         });
     }
 
+    addLocation(info) {
+        return new Promise((resolve, reject) => {
+            // insert postal code, city and province into location_code
+            this.pool.query('INSERT INTO location_code values($1, $2, $3);',
+                [info.postal_code, info.city, info.province], (err, res) => {
+                    //if(err) reject(err);
+
+                    // insert postal code and street address into location_address
+                    this.pool.query('INSERT INTO location_address values($1, $2, $3);',
+                        [info.postal_code, info.street_name, info.street_number], (err, res) => {
+                            //if(err) reject(err);
+                            
+                            resolve();
+                    });
+            });
+        });
+    }
+
+    addPublisher(info) {
+        return new Promise((resolve, reject) => {
+            // insert publisher into database
+            this.pool.query('INSERT INTO publisher values(default, $1, $2, $3, $4, $5, $6);',
+                [info.name, info.email, info.phone_number, info.postal_code, info.street_name, info.street_number], (err, res) => {
+                    //if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        this.pool.query('SELECT * FROM publisher WHERE email LIKE $1',
+                            [info.email], (err, res) => {
+                                if(err) reject(err);
+
+                                resolve(res.rows[0]);
+                            });
+                    }
+            });
+        });
+    }
+
+    addAuthor(info) {
+        return new Promise((resolve, reject) => {
+            // insert author into database
+            this.pool.query('INSERT INTO author values(default, $1, $2, $3, $4);',
+                [info.first_name, info.last_name, info.email, info.phone_number], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res) {
+                        resolve(res.rows);
+                    }
+            });
+        });
+    }
+
+    addGenre(info) {
+        return new Promise((resolve, reject) => {
+            // insert genre into database
+            this.pool.query('INSERT INTO genre values(default, $1, $2);',
+                [info.name, info.description], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res) {
+                        resolve(res.rows);
+                    }
+            });
+        });
+    }
+
+    addBook(info) {
+        return new Promise((resolve, reject) => {
+            // insert book into database
+            this.pool.query('INSERT INTO book values($1, $2, $3, $4, $5, $6, $7, $8);',
+                [info.isbn, info.title, info.description, info.num_pages,
+                    info.price, info.count, info.publisher_id, info.percentage_of], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res) {
+                        resolve(res.rows);
+                    }
+            });
+        });
+    }
+
     searchForBooks(filter) {
         return new Promise((resolve, reject) => {
             // build the query from search options

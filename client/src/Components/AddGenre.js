@@ -4,7 +4,8 @@ class AddGenre extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+            name: '',
+            description: ''
         };
     }
 
@@ -16,10 +17,20 @@ class AddGenre extends React.Component {
 
     }
 
+    submit() {
+        this.props.socket.emit('addGenre', this.state);
+    }
+
     render() {
         return (
             <div>
-                Add Genre
+                <label htmlFor='name'>Name: </label>
+                <input id='name' onChange={this.handleChange.bind(this)} required/>
+                <br/>
+                <label htmlFor='description'>Description: </label>
+                <input id='description' onChange={this.handleChange.bind(this)} required/>
+                <br/>
+                <button onClick={this.submit.bind(this)}>Submit</button>                
             </div>
         )
     }
