@@ -180,18 +180,26 @@ class Database {
             let filtering = filter.bookName || filter.author; // || filter.isbn;
             if(filtering) query += ' WHERE'
 
+            let splitKey = filter.searchKey.split(' ');
+            let counter = 2;
             if(filter.bookName) {
                 query += " UPPER(book_name) LIKE UPPER('%' || $1 || '%')";
-                let counter = 2;
-                filter.searchKey.split(' ').forEach((searchWord) => {
+                splitKey.forEach((searchWord) => {
                     if(searchWord.length > 3) {
-                        query += ` or UPPER(book_name) LIKE UPPER('%' || $${counter++} || '%')`;
+                        query += ` OR UPPER(book_name) LIKE UPPER('%' || $${counter++} || '%')`;
                         queryParams.push(searchWord);
                     }
                 });
             }
             if(filter.bookName && filter.author) query += " OR";
-            if(filter.author) query += " UPPER(CONCAT(first_name, ' ', last_name)) LIKE UPPER('%' || $1 || '%')";
+            if(filter.author) {
+                query += " UPPER(CONCAT(first_name, ' ', last_name)) LIKE UPPER('%' || $1 || '%')";
+
+                splitKey.forEach((searchWord) => {
+                    query += ` OR UPPER(CONCAT(first_name, ' ', last_name)) LIKE UPPER('%' || $${counter++} || '%')`;
+                    queryParams.push(searchWord);
+                });
+            }
             if(filter.author && filter.isbn || filter.bookName && filter.isbn) query += " OR";
             if(filter.isbn) query += " CAST(isbn AS TEXT) LIKE ('%' || $1 || '%')";
             if(filter.isbn && filter.genre || filter.author && filter.genre || filter.bookName && filter.genre) query += " OR";

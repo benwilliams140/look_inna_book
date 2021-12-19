@@ -14,6 +14,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 6. Run the command `npm install`
 Note: Don't worry about the vulnerabilities.
 
+## Database Instructions
+- I used [pgAdmin4](https://www.pgadmin.org/download/) and PostgreSQL to host my database.
+- To bootstrap the database, complete one of the following:
+    - There is a .backup file in the `SQL` directory; you can use this to easily restore the state of my database with [this process](https://o7planning.org/11913/backup-and-restore-postgres-database-with-pgadmin#a33893371)
+    - If you would prefer to execute the commands yourself, the DDL and Insertions SQL files are in the `SQL` directory. Copy these commands (DDL, then insertions) to the Query tool in pgAdmin
+- Ensure you change the database config to match that of your own installation (in the constructor of `./api/src/databaseController.js`)
+
 ## Run Instructions
 1. In the same terminal, navigate to the backend application with `cd api`
 2. Run the command `npm run dev`
