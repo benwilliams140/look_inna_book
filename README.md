@@ -22,7 +22,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Ensure you change the database config to match that of your own installation (in the constructor of `./api/src/databaseController.js`)
 
 ## Run Instructions
-1. In the same terminal, navigate to the backend application with `cd api`
+1. In the same terminal as before, navigate to the backend application with `cd ../api`
 2. Run the command `npm run dev`
 3. Open a separate terminal. Navigate to the project folder, followed by the frontend application with `cd client`
 4. Run the command `npm run dev`
