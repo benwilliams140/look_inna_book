@@ -8,6 +8,7 @@ class BookInfo extends React.Component {
                 isbn: null,
                 title: '',
                 description: '',
+                num_pages: 1,
                 authors: [],
                 publisher: '',
                 count: 0,
@@ -43,6 +44,7 @@ class BookInfo extends React.Component {
                 <p>Written By: {this.state.book.authors}</p>
                 <p>Published By: {this.state.book.publisher}</p>
                 <p>Description: {this.state.book.description}</p>
+                <p>Number of Pages: {this.state.book.num_pages}</p>
                 <p>Genres: {this.state.book.genres}</p>
                 <p>ISBN: {this.state.book.isbn}</p>
                 <p>Price: ${this.state.book.price}</p>

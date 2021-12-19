@@ -222,6 +222,7 @@ class Database {
                             isbn: isbn,
                             title: info.book_name,
                             description: info.description,
+                            num_pages: info.num_pages,
                             authors: [
                                 info.first_name + ' ' + info.last_name
                             ],

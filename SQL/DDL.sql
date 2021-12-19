@@ -195,7 +195,7 @@ create table shipment(
 );
 
 create view book_info as
-select isbn, book.name as book_name, book.description, price, count, publisher_id, percentage_of_sales,
+select isbn, book.name as book_name, book.description, price, num_pages, count, publisher_id, percentage_of_sales,
 first_name, last_name,
 genre.name as genre_name,
 publisher.name as publisher_name
