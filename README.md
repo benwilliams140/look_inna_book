@@ -11,8 +11,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 3. Navigate to the backend directory with `cd look_inna_book/api`
 4. Run the command `npm install`
 5. Navigate to the frontend directory with `cd ../client`
-6. Run the command `npm install`
-Note: Don't worry about the vulnerabilities.
+6. Run the command `npm install`\
+- Note: Don't worry about the vulnerabilities.
 
 ## Database Instructions
 - I used [pgAdmin4](https://www.pgadmin.org/download/) and PostgreSQL to host my database.
