@@ -53,7 +53,7 @@ class OwnerDashboard extends React.Component {
         return(
             this.props.admin ? (
                 <div>
-                    <h1>Owner Dashboard</h1>
+                    <h2>Owner Dashboard</h2>
                     <div>
                         <button onClick={this.addBook.bind(this)}>Add Book</button>
                         <button onClick={this.props.logout}>Logout</button>

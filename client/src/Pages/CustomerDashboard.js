@@ -32,6 +32,10 @@ class CustomerDashboard extends React.Component {
         });
     }
 
+    addToCart() {
+
+    }
+
     clearModal() {
         this.setState({
             modal: {
@@ -53,7 +57,7 @@ class CustomerDashboard extends React.Component {
         // render the customer dashboard
         return(
             <div>
-                <h1>CustomerDashboard</h1>
+                <h2>CustomerDashboard</h2>
                 <div>
                     {(this.props.user.id) ? (
                         <div>
@@ -73,7 +77,8 @@ class CustomerDashboard extends React.Component {
                     )}
                 </div>
                 <div>
-                    <BookBrowser socket={this.props.socket}/>
+                    <BookBrowser    socket={this.props.socket}
+                                    addToCart={this.addToCart.bind(this)}/>
                 </div>
             </div>
         );

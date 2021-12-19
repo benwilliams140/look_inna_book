@@ -18,13 +18,16 @@ function App() {
 
   return (
     socket ? (
-      <BrowserRouter>
+      <div>
+        <h1>Look Inna Book</h1>
+        <BrowserRouter>
         <Routes>
           <Route path = '/' element = {
             <Dashboard socket={socket}/> 
           } />
         </Routes>
       </BrowserRouter>
+      </div>
     ) : (
       <p>Not Connected - Navigate to the api folder and run <code>npm run dev</code></p>
     )

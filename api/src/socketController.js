@@ -9,6 +9,7 @@ class Connection {
         socket.on('registerAccount', (info) => this.handleAccountRegistration(info));
         socket.on('accountLogin', (credentials) => this.handleAccountLogin(credentials));
         socket.on('retrieveBooks', (filter) => this.handleBookSearch(filter));
+        socket.on('retrieveBookInfo', (isbn) => this.handleBookRequest(isbn));
         socket.on('retrievePublishers', () => this.handlePublisherRequest());
         socket.on('retrieveAuthors', () => this.handleAuthorRequest());
         socket.on('retrieveGenres', () => this.handleGenreRequest());
@@ -52,6 +53,16 @@ class Connection {
         })
         .catch((err) => {
             console.log('Error searching for book');
+        });
+    }
+
+    handleBookRequest(isbn) {
+        this.database.retrieveBookInfo(isbn)
+        .then((book) => {
+            this.socket.emit('bookInfo', book);
+        })
+        .catch((err) => {
+            console.log('Error retrieving book info');
         });
     }
 

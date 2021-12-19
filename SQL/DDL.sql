@@ -196,6 +196,7 @@ create table shipment(
 
 create view book_info as
 select isbn, book.name as book_name, book.description, price, count, publisher_id, percentage_of_sales,
-author.id as author_id, first_name, last_name,
-genre.id as genre_id, genre.name as genre_name
-from book natural join writes natural join author join (belongs_to natural join genre) using(isbn);
+first_name, last_name,
+genre.name as genre_name,
+publisher.name as publisher_name
+from (book join publisher on book.publisher_id = publisher.id) join (writes natural join author) using (isbn) join (belongs_to natural join genre) using(isbn);

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import BookInfo from './BookInfo';
+
 class BookBrowser extends React.Component {
     constructor(props) {
         super(props);
@@ -10,6 +12,10 @@ class BookBrowser extends React.Component {
                 bookName: true,
                 genre: false,
                 searchKey: ''
+            },
+            bookModal: {
+                opened: false,
+                isbn: null
             },
             books: []
         };
@@ -42,7 +48,22 @@ class BookBrowser extends React.Component {
     }
 
     viewBook(event) {
-        console.log(event.target.innerText);
+        console.log();
+        this.setState({
+            bookModal: {
+                opened: true,
+                isbn: event.target.innerText
+            }
+        });
+    }
+
+    clearModal() {
+        this.setState({
+            bookModal: {
+                opened: false,
+                isbn: null
+            }
+        });
     }
 
     renderBooks() {
@@ -65,33 +86,45 @@ class BookBrowser extends React.Component {
     render() {
         return(
         <div>
-            <form>
-                <h3>Book Browser</h3>
-                <input id='searchKey' onChange={this.handleChange.bind(this)}/>
-                <button onClick={this.retrieveBooks.bind(this)}>Search</button>
-                <br/>
-                <label htmlFor='searchByAtt'>Search By:</label>
-                <span id='searchByAtt'>
-                    <input id='bookName' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.bookName}/>
-                    <label htmlFor='bookName'>Book Name</label>
-                    <input id='author' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.author}/>
-                    <label htmlFor='author'>Author</label>
-                    <input id='isbn' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.isbn}/>
-                    <label htmlFor='isbn'>ISBN</label>
-                    <input id='genre' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.genre}/>
-                    <label htmlFor='genre'>Genre</label>
-                </span>
-            </form>
-            <div>
-                <table>
-                    <thead>
+            <h3>Book Browser</h3>
+            
+            {this.state.bookModal.opened && this.state.bookModal.isbn ? (
+                <div>
+                    <BookInfo   socket={this.props.socket}
+                                isbn={this.state.bookModal.isbn}
+                                goToBrowser={this.clearModal.bind(this)}
+                                addToCart={this.props.addToCart}/>
+                </div>
+            ) : (
+                <div>
+                    <form>
+                        <input id='searchKey' onChange={this.handleChange.bind(this)}/>
+                        <button onClick={this.retrieveBooks.bind(this)}>Search</button>
+                        <br/>
+                        <label htmlFor='searchByAtt'>Search By:</label>
+                        <span id='searchByAtt'>
+                            <input id='bookName' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.bookName}/>
+                            <label htmlFor='bookName'>Book Name</label>
+                            <input id='author' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.author}/>
+                            <label htmlFor='author'>Author</label>
+                            <input id='isbn' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.isbn}/>
+                            <label htmlFor='isbn'>ISBN</label>
+                            <input id='genre' type='checkbox' onChange={this.handleCheckboxChange.bind(this)} checked={this.state.filterBy.genre}/>
+                            <label htmlFor='genre'>Genre</label>
+                        </span>
+                    </form>
+                    <div>
+                        <table>
+                            <thead>
 
-                    </thead>
-                    <tbody>
-                        {this.renderBooks()}
-                    </tbody>
-                </table>
-            </div>
+                            </thead>
+                            <tbody>
+                                {this.renderBooks()}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
         );
     }

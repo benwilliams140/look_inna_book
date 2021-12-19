@@ -193,8 +193,9 @@ class Database {
             if(filter.isbn) query += " CAST(isbn AS TEXT) LIKE ('%' || $1 || '%')";
             if(filter.isbn && filter.genre || filter.author && filter.genre || filter.bookName && filter.genre) query += " OR";
             if(filter.genre) query += " UPPER(genre_name) LIKE UPPER('%' || $1 || '%')";
+            query += ";";
 
-            // main query, find books with an exact match
+            // find books that satisfy query
             this.pool.query(query,
                 filtering ? queryParams : [], (err, res) => {
                     if(err) reject(err);
@@ -229,6 +230,47 @@ class Database {
                         }
                     }
                     resolve(books);
+            });
+        });
+    }
+
+    retrieveBookInfo(isbn) {
+        return new Promise((resolve, reject) => {
+            // query for all publishers
+            this.pool.query('SELECT * FROM book_info where isbn = $1;',
+                [isbn], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount > 0) {
+                        let info = res.rows[0];
+                        let book = {
+                            isbn: isbn,
+                            title: info.book_name,
+                            description: info.description,
+                            authors: [
+                                info.first_name + ' ' + info.last_name
+                            ],
+                            publisher: info.publisher_name,
+                            count: info.count,
+                            price: info.price,
+                            genres: [
+                                info.genre_name
+                            ]
+                        };
+                        for(let i = 1; i < res.rowCount; i++) {
+                            info = res.rows[i];
+                            let authorName = info.first_name + ' ' + info.last_name;
+                            if(!book.authors.includes(authorName)) {
+                                book.authors.push(info.first_name + ' ' + info.last_name);
+                            }
+                            if(!book.genres.includes(info.genre_name)) {
+                                book.genres.push(info.genre_name);
+                            }
+                        }
+                        resolve(book);
+                    } else {
+                        resolve([]);
+                    }
             });
         });
     }
