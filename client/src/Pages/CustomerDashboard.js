@@ -26,7 +26,6 @@ class CustomerDashboard extends React.Component {
         }
 
         this.props.socket.on('basketID', (id) => {
-            console.log(id);
             this.setState({
                 basketID: id
             }, () => {
@@ -43,7 +42,6 @@ class CustomerDashboard extends React.Component {
         });
 
         if(this.props.user.id) {
-            console.log('looking');
             this.props.socket.emit('findBasket', this.props.user.id);
         }
     }
@@ -119,7 +117,7 @@ class CustomerDashboard extends React.Component {
                     <CheckoutBasket socket={this.props.socket}
                                     goToDashboard={this.clearModal.bind(this)}
                                     basketID={this.state.basketID}
-                                    key={1}/>
+                                    userID={this.props.user.id}/>
                 )
             }
         }

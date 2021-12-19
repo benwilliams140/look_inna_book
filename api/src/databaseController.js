@@ -23,7 +23,7 @@ class Database {
     addNewAccount(account) {
         return new Promise((resolve, reject) => {
             this.pool.query('INSERT INTO account values(default, $1, $2, $3, $4, $5, $6) RETURNING *;',
-                [account.firstName, account.lastName, account.username, account.password, account.email, account.phoneNumber], (err, res) => {
+                [account.first_name, account.last_name, account.username, account.password, account.email, account.phone_number], (err, res) => {
                     if (err) reject(err);
 
                     // verify account was added
@@ -66,6 +66,34 @@ class Database {
                             
                             resolve();
                     });
+            });
+        });
+    }
+
+    addPaymentInfo(info) {
+        return new Promise((resolve, reject) => {
+            // insert new payment info
+            this.pool.query('INSERT INTO payment_info values($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;',
+                [info.card_number, info.card_type, info.csv, info.expiry, info.id, info.postal_code, info.street_name, info.street_number], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0]);
+                    }
+            });
+        });
+    }
+
+    addLivesAt(info) {
+        return new Promise((resolve, reject) => {
+            // insert new relationship into lives_at
+            this.pool.query('INSERT INTO lives_at values($1, $2, $3, $4) RETURNING *;',
+                [info.id, info.postal_code, info.street_name, info.street_number], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0]);
+                    }
             });
         });
     }
@@ -117,7 +145,7 @@ class Database {
             // insert book into database
             this.pool.query('INSERT INTO book values($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;',
                 [info.isbn, info.title, info.description, info.num_pages,
-                    info.price, info.count, info.publisher_id, info.percentage_of], (err, res) => {
+                    info.price, info.count, info.publisher_id, info.percentage_of_sales], (err, res) => {
                     if(err) reject(err);
 
                     if(res && res.rowCount === 1) {
@@ -212,7 +240,7 @@ class Database {
     retrieveBookInfo(isbn) {
         return new Promise((resolve, reject) => {
             // query for all publishers
-            this.pool.query('SELECT * FROM book_info where isbn = $1;',
+            this.pool.query('SELECT * FROM book_info WHERE isbn = $1;',
                 [isbn], (err, res) => {
                     if(err) reject(err);
 
@@ -358,7 +386,7 @@ class Database {
     findBasketID(userID) {
         return new Promise((resolve, reject) => {
             // query for the basketID corresponding to the user
-            this.pool.query('SELECT * FROM checkout_basket WHERE account_id = $1 RETURNING *;',
+            this.pool.query('SELECT * FROM checkout_basket WHERE account_id = $1;',
                 [userID], (err, res) => {
                     if(err) reject(err);
 

@@ -28,17 +28,33 @@ class Connection {
         this.io.to(this.socket.id).emit('connection');
     }
 
-    handleAccountRegistration(info) {
+    async handleAccountRegistration(info) {
+        await this.database.addLocation(info);
+
         this.database.addNewAccount(info)
-        .then((user) => {
-            this.socket.emit('registrationResult', {
-                user: user
-            });
+        .then(async (user) => {
+            let lives_at = {
+                id: user.id,
+                postal_code: info.postal_code,
+                street_name: info.street_name,
+                street_number: info.street_number
+            };
+            await this.database.addLivesAt(lives_at);
+
+            let payment_info = {
+                ...lives_at,
+                card_number: info.card_number,
+                card_type: info.card_type,
+                csv: info.csv,
+                expiry: info.expiry
+            }
+
+            await this.database.addPaymentInfo(payment_info);
+            
+            this.socket.emit('registrationResult', user);
         })
         .catch((err) => {
-            this.socket.emit('registrationResult', {
-                err: err
-            });
+            console.log(err);
         });
     }
 

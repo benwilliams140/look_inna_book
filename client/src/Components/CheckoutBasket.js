@@ -40,6 +40,10 @@ class CheckoutBasket extends React.Component {
         this.props.socket.emit('removeFromBasket', this.props.basketID, event.target.name)
     }
 
+    checkout(event) {
+        
+    }
+
     renderBasket() {
         return(
             this.state.basket.map((item) => {
@@ -81,8 +85,13 @@ class CheckoutBasket extends React.Component {
                         </table>
                     </div> :
                     <div>
-                        <p>You do not currently have a basket.</p>
+                        <p>You do not currently have anything in your basket.</p>
                     </div>
+                }
+                {
+                    this.props.userID ?
+                    <button onClick={this.checkout.bind(this)}>Checkout</button> :
+                    <p>You must be registered to checkout.</p>
                 }
                 <button onClick={this.props.goToDashboard}>Close</button>
             </div>

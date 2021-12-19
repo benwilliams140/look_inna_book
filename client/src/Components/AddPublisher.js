@@ -67,8 +67,8 @@ class AddPublisher extends React.Component {
                 <label htmlFor='city'>City: </label>
                 <input id='city' onChange={this.handleChange.bind(this)} required/>
                 <br/>
-                <label htmlFor='province'>Province: </label>
-                <select id="province" onChange={this.handleChange.bind(this)}>
+                <select id="province" onChange={this.handleChange.bind(this)} required>
+                    <option value=''>Select a Province</option>
                     <option value="AB">Alberta</option>
                     <option value="BC">British Columbia</option>
                     <option value="MB">Manitoba</option>

@@ -57,6 +57,7 @@ class Dashboard extends React.Component {
 
     setUser(user) {
         if(user) {
+            console.log(user);
             // retrieve and calculate values in the right format
             let user_ = {
                 id: user.id,

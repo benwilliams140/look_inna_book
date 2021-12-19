@@ -194,6 +194,7 @@ create table shipment(
 		on delete set null
 );
 
+/*Creates a view containing all necessary information on a book*/
 create view book_info as
 select isbn, book.name as book_name, book.description, price, num_pages, count, publisher_id, percentage_of_sales,
 first_name, last_name,
