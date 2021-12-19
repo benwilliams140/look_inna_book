@@ -20,3 +20,7 @@ Note: Don't worry about the vulnerabilities.
 3. Open a separate terminal. Navigate to the project folder, followed by the frontend application with `cd client`
 4. Run the command `npm run dev`
 5. This will automatically open the browser and navigate to the application's home page at `localhost:3000`
+
+## Accessing the Admin Homepage
+1. While on the customer dashboard, click `Login` and login with the following credentials:
+- username: admin | password: pass
