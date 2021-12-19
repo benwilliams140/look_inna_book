@@ -13,17 +13,13 @@ class BookInfo extends React.Component {
                 count: 0,
                 price: 0.0,
                 genres: []
-            }
+            },
+            orderCount: 1
         };
     }
 
     handleChange(event) {
         this.setState({[event.target.id]: event.target.value});
-    }
-
-    close(event) {
-        event.preventDefault(); // stop the default behaviour, useful to stop auto refresh
-        this.props.goToBrowser(); // go back to book browser
     }
 
     componentDidMount() {
@@ -34,6 +30,10 @@ class BookInfo extends React.Component {
 
     handleBookInfo(book) {
         this.setState({ book: book });
+    }
+
+    addToBasket(event) {
+        this.props.addToBasket(this.state.book.isbn, this.state.orderCount);
     }
 
     render() {
@@ -48,11 +48,14 @@ class BookInfo extends React.Component {
                 <p>Price: ${this.state.book.price}</p>
                 {
                     // userID is only sent when rendering from CustomerDashboard
-                    this.props.addToCart ?   
-                    <button onClick={this.props.addToCart}>Add to Cart</button> :
+                    this.props.addToBasket ?
+                    <div>
+                        <input type='number' id='orderCount' placeholder='1' min='1' max={this.state.book.count} onChange={this.handleChange.bind(this)}/> 
+                        <button onClick={this.addToBasket.bind(this)}>Add to Basket</button>
+                    </div> :
                     <span></span>
                 }
-                <button onClick={this.close.bind(this)}>Close</button>        
+                <button onClick={this.props.goToBrowser}>Close</button>
             </div>
         )
     }

@@ -24,6 +24,7 @@ class Dashboard extends React.Component {
 
     logout() {
         window.localStorage.clear();
+        window.sessionStorage.clear();
         this.setState({user: {}});
     }
 

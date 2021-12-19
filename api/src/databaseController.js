@@ -22,23 +22,13 @@ class Database {
 
     addNewAccount(account) {
         return new Promise((resolve, reject) => {
-            this.pool.query('INSERT INTO account values(default, $1, $2, $3, $4, $5, $6);',
+            this.pool.query('INSERT INTO account values(default, $1, $2, $3, $4, $5, $6) RETURNING *;',
                 [account.firstName, account.lastName, account.username, account.password, account.email, account.phoneNumber], (err, res) => {
                     if (err) reject(err);
 
                     // verify account was added
-                    if(res && res.rowCount && res.rowCount === 1) {
-                        console.log(res);
-                        this.pool.query('SELECT * FROM account WHERE username = $1',
-                            [account.username], (err, res) => {
-                                if(err) reject(err);
-
-                                if(res && res.rowCount && res.rowCount === 1) {
-                                    resolve(res.rows[0]);
-                                } else {
-                                    resolve(null);
-                                }
-                            });
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0]);
                     } else {
                         reject(new Error("Account wasn't registered"));
                     }
@@ -65,12 +55,12 @@ class Database {
     addLocation(info) {
         return new Promise((resolve, reject) => {
             // insert postal code, city and province into location_code
-            this.pool.query('INSERT INTO location_code values($1, $2, $3);',
+            this.pool.query('INSERT INTO location_code values($1, $2, $3) RETURNING *;',
                 [info.postal_code, info.city, info.province], (err, res) => {
                     //if(err) reject(err);
 
                     // insert postal code and street address into location_address
-                    this.pool.query('INSERT INTO location_address values($1, $2, $3);',
+                    this.pool.query('INSERT INTO location_address values($1, $2, $3) RETURNING *;',
                         [info.postal_code, info.street_name, info.street_number], (err, res) => {
                             //if(err) reject(err);
                             
@@ -83,17 +73,12 @@ class Database {
     addPublisher(info) {
         return new Promise((resolve, reject) => {
             // insert publisher into database
-            this.pool.query('INSERT INTO publisher values(default, $1, $2, $3, $4, $5, $6);',
+            this.pool.query('INSERT INTO publisher values(default, $1, $2, $3, $4, $5, $6) RETURNING *;',
                 [info.name, info.email, info.phone_number, info.postal_code, info.street_name, info.street_number], (err, res) => {
                     //if(err) reject(err);
 
                     if(res && res.rowCount === 1) {
-                        this.pool.query('SELECT * FROM publisher WHERE email LIKE $1',
-                            [info.email], (err, res) => {
-                                if(err) reject(err);
-
-                                resolve(res.rows[0]);
-                        });
+                        resolve(res.rows[0]);
                     }
             });
         });
@@ -102,17 +87,12 @@ class Database {
     addAuthor(info) {
         return new Promise((resolve, reject) => {
             // insert author into database
-            this.pool.query('INSERT INTO author values(default, $1, $2, $3, $4);',
+            this.pool.query('INSERT INTO author values(default, $1, $2, $3, $4) RETURNING *;',
                 [info.first_name, info.last_name, info.email, info.phone_number], (err, res) => {
                     if(err) reject(err);
 
                     if(res && res.rowCount === 1) {
-                        this.pool.query('SELECT * FROM author WHERE email LIKE $1',
-                            [info.email], (err, res) => {
-                                if(err) reject(err);
-
-                                resolve(res.rows[0]);
-                        });
+                        resolve(res.rows[0]);
                     }
             });
         });
@@ -121,17 +101,12 @@ class Database {
     addGenre(info) {
         return new Promise((resolve, reject) => {
             // insert genre into database
-            this.pool.query('INSERT INTO genre values(default, $1, $2);',
+            this.pool.query('INSERT INTO genre values(default, $1, $2) RETURNING *;',
                 [info.name, info.description], (err, res) => {
                     if(err) reject(err);
 
                     if(res && res.rowCount === 1) {
-                        this.pool.query('SELECT * FROM genre WHERE name like $1',
-                            [info.name], (err, res) => {
-                                if(err) reject(err);
-
-                                resolve(res.rows[0]);
-                        });
+                        resolve(res.rows[0]);
                     }
             });
         });
@@ -140,7 +115,7 @@ class Database {
     addBook(info) {
         return new Promise((resolve, reject) => {
             // insert book into database
-            this.pool.query('INSERT INTO book values($1, $2, $3, $4, $5, $6, $7, $8);',
+            this.pool.query('INSERT INTO book values($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;',
                 [info.isbn, info.title, info.description, info.num_pages,
                     info.price, info.count, info.publisher_id, info.percentage_of], (err, res) => {
                     if(err) reject(err);
@@ -148,7 +123,7 @@ class Database {
                     if(res && res.rowCount === 1) {
                         // insert genre relationships
                         info.genre_ids.forEach((id) => {
-                            this.pool.query('INSERT INTO belongs_to values($1, $2);',
+                            this.pool.query('INSERT INTO belongs_to values($1, $2) RETURNING *;',
                                 [info.isbn, id], (err, res) => {
                                     if(err) reject(err);
                             });
@@ -156,13 +131,13 @@ class Database {
 
                         // insert author relationships
                         info.author_ids.forEach((id) => {
-                            this.pool.query('INSERT INTO writes values($1, $2);',
+                            this.pool.query('INSERT INTO writes values($1, $2) RETURNING *;',
                                 [info.isbn, id], (err, res) => {
                                     if(err) reject(err);
                             });
                         });
 
-                        resolve();
+                        resolve(res.rows[0]);
                     }
             });
         });
@@ -318,6 +293,104 @@ class Database {
                         resolve(res.rows);
                     } else {
                         resolve([]);
+                    }
+            });
+        });
+    }
+
+    createBasket(userID) {
+        return new Promise((resolve, reject) => {
+            // insert new basket into database
+            this.pool.query('INSERT INTO checkout_basket VALUES(default, $1) RETURNING *;',
+                [userID], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0]);
+                    }
+            });
+        });
+    }
+
+    addToBasket(basket, item) {
+        return new Promise((resolve, reject) => {
+            // insert item into the contains relation
+            this.pool.query('INSERT INTO contains VALUES($1, $2, $3) RETURNING *;',
+                [item.isbn, basket.id, item.count], (err, res) =>{
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0]);
+                    }
+            });
+        });
+    }
+
+    removeFromBasket(id, isbn) {
+        return new Promise((resolve, reject) => {
+            // delete item from a user's checkout basket
+            this.pool.query('DELETE FROM contains WHERE basket_id = $1 AND isbn = $2 RETURNING *;',
+                [id, isbn], (err, res) =>{
+                    if(err) reject(err);
+                    
+                    if(res && res.rowCount > 0) {
+                        resolve(res.rows);
+                    }
+            });
+        });
+    }
+
+    retrieveBasket(id) {
+        return new Promise((resolve, reject) => {
+            // query for the contents of the basket (using the contains relation)
+            this.pool.query('SELECT isbn, contains.count, name, book.count as max_count FROM contains JOIN book USING(isbn) WHERE basket_id = $1;',
+                [id], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount > 0) {
+                        resolve(res.rows);
+                    }
+            });
+        });
+    }
+
+    findBasketID(userID) {
+        return new Promise((resolve, reject) => {
+            // query for the basketID corresponding to the user
+            this.pool.query('SELECT * FROM checkout_basket WHERE account_id = $1 RETURNING *;',
+                [userID], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve(res.rows[0].id);
+                    } else {
+                        resolve(null);
+                    }
+            });
+        });
+    }
+
+    deleteBasket(id) {
+        return new Promise((resolve, reject) => {
+            // delete the corresponding basket
+            this.pool.query('DELETE FROM checkout_basket WHERE id = $1;',
+                [id], (err, res) => {
+                    if(err) reject(err);
+
+                   resolve();
+            });
+        });
+    }
+
+    updateBasket(id, item) {
+        return new Promise((resolve, reject) => {
+            // update corresponding basket item count
+            this.pool.query('UPDATE contains SET count = $1 WHERE basket_id = $2 AND isbn = $3 RETURNING *;',
+                [item.count, id, item.isbn], (err, res) => {
+                    if(err) reject(err);
+
+                    if(res && res.rowCount === 1) {
+                        resolve();
                     }
             });
         });

@@ -13,11 +13,17 @@ class Connection {
         socket.on('retrievePublishers', () => this.handlePublisherRequest());
         socket.on('retrieveAuthors', () => this.handleAuthorRequest());
         socket.on('retrieveGenres', () => this.handleGenreRequest());
+        socket.on('retrieveBasket', (id) => this.handleBasketRequest(id));
+        socket.on('findBasket', (userID) => this.handleBasketSearch(userID));
+        socket.on('removeBasket', (id) => this.handleBasketDeletion(id));
         socket.on('addLocation', (locationInfo) => this.handleLocationAddition(locationInfo));
         socket.on('addPublisher', (publisherInfo) => this.handlePublisherAddition(publisherInfo));
         socket.on('addAuthor', (authorInfo) => this.handleAuthorAddition(authorInfo));
         socket.on('addGenre', (genreInfo) => this.handleGenreAddition(genreInfo));
         socket.on('addBook', (bookInfo) => this.handleBookAddition(bookInfo));
+        socket.on('addToBasket', (basket, item) => this.handleBasketAddition(basket, item));
+        socket.on('removeFromBasket', (id, isbn) => this.handleRemoveFromBasket(id, isbn));
+        socket.on('updateBasketCount', (basketID, item) => this.handleBasketCountUpdate(basketID, item));
 
         this.io.to(this.socket.id).emit('connection');
     }
@@ -42,7 +48,7 @@ class Connection {
             this.socket.emit('user', user);
         })
         .catch((err) => {
-            console.log('Error logging in, please try again.');
+            console.log(err);
         });
     }
 
@@ -52,7 +58,7 @@ class Connection {
             this.socket.emit('books', books);
         })
         .catch((err) => {
-            console.log('Error searching for book');
+            console.log(err);
         });
     }
 
@@ -62,7 +68,7 @@ class Connection {
             this.socket.emit('bookInfo', book);
         })
         .catch((err) => {
-            console.log('Error retrieving book info');
+            console.log(err);
         });
     }
 
@@ -72,7 +78,7 @@ class Connection {
             this.socket.emit('locationAdded');
         })
         .catch((err) => {
-            console.log('Error adding location');
+            console.log(err);
         });
     }
 
@@ -82,7 +88,7 @@ class Connection {
             this.socket.emit('publisherAdded', res);
         })
         .catch((err) => {
-            console.log('Error adding publisher');
+            console.log(err);
         });
     }
 
@@ -92,7 +98,7 @@ class Connection {
             this.socket.emit('authorAdded', res);
         })
         .catch((err) => {
-            console.log('Error adding author');
+            console.log(err);
         });
     }
 
@@ -102,7 +108,7 @@ class Connection {
             this.socket.emit('genreAdded', res);
         })
         .catch((err) => {
-            console.log('Error adding genre');
+            console.log(err);
         });
     }
 
@@ -112,7 +118,7 @@ class Connection {
             //this.socket.emit('bookAdded', res);
         })
         .catch((err) => {
-            console.log('Error adding book');
+            console.log(err);
         });
     }
 
@@ -122,7 +128,7 @@ class Connection {
             this.socket.emit('publishers', publishers);
         })
         .catch((err) => {
-            console.log('Error retrieving publishers');
+            console.log(err);
         });
     }
 
@@ -132,7 +138,7 @@ class Connection {
             this.socket.emit('authors', authors);
         })
         .catch((err) => {
-            console.log('Error retrieving authors');
+            console.log(err);
         });
     }
 
@@ -142,7 +148,73 @@ class Connection {
             this.socket.emit('genres', genres);
         })
         .catch((err) => {
-            console.log('Error retrieving genres');
+            console.log(err);
+        });
+    }
+
+    async handleBasketAddition(basket, item) {
+        // create a basket if one isn't stored
+        if(!basket.id) {
+            basket = await this.database.createBasket(basket.user);
+        }
+
+        // add book to the basket
+        this.database.addToBasket(basket, item)
+        .then((item) => {
+            this.socket.emit('itemAdded', basket, item);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+    handleRemoveFromBasket(id, isbn) {
+        this.database.removeFromBasket(id, isbn)
+        .then((item) => {
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+
+    handleBasketRequest(id) {
+        this.database.retrieveBasket(id)
+        .then((basket) => {
+            this.socket.emit('basketContents', basket);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    handleBasketSearch(userID) {
+        this.database.findBasketID(userID)
+        .then((id) => {
+            this.socket.emit('basketID', id);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    handleBasketDeletion(id) {
+        this.database.deleteBasket(id)
+        .then((res) => {
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+    handleBasketCountUpdate(basketID, item) {
+        this.database.updateBasket(basketID, item)
+        .then((res) => {
+
+        })
+        .catch((err) => {
+            console.log(err);
         });
     }
 };

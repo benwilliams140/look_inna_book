@@ -93,12 +93,12 @@ class BookBrowser extends React.Component {
                     <BookInfo   socket={this.props.socket}
                                 isbn={this.state.bookModal.isbn}
                                 goToBrowser={this.clearModal.bind(this)}
-                                addToCart={this.props.addToCart}/>
+                                addToBasket={this.props.addToBasket}/>
                 </div>
             ) : (
                 <div>
                     <form>
-                        <input id='searchKey' onChange={this.handleChange.bind(this)}/>
+                        <input type='search' id='searchKey' onChange={this.handleChange.bind(this)}/>
                         <button onClick={this.retrieveBooks.bind(this)}>Search</button>
                         <br/>
                         <label htmlFor='searchByAtt'>Search By:</label>

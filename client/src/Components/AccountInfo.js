@@ -16,11 +16,6 @@ class AccountInfo extends React.Component {
 
     }
 
-    close(event) {
-        event.preventDefault(); // stop the default behaviour, useful to stop auto refresh
-        this.props.goToDashboard(); // go back to main dashboard
-    }
-
     deleteAccount(event) {
         event.preventDefault();
     }
@@ -29,7 +24,7 @@ class AccountInfo extends React.Component {
         return (
             <div>
                 Account Info
-                <button onClick={this.close.bind(this)}>Close</button>
+                <button onClick={this.props.goToDashboard}>Close</button>
             </div>
         )
     }
